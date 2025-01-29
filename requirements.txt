@@ -1,0 +1,6 @@
+transformers
+torch
+sentencepiece
+langchain
+nltk
+rouge-score
