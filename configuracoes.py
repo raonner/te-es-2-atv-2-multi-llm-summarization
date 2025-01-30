@@ -1,3 +1,5 @@
+# configuracoes.py
+
 MODELOS = {
     "llama": "meta-llama/Llama-2-7b-chat-hf",
     "deepseek": "deepseek-ai/deepseek-llm-7b"

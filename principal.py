@@ -1,20 +1,52 @@
+import os
 from sumarizacao.sumarizador import gerar_resumo
 from avaliacao.avaliar import avaliar_resumo
 
-# Exemplo de entrada
-texto_entrada = """
-Modelos de linguagem de grande escala (LLMs) transformaram o processamento de linguagem natural (PLN),
-habilitando capacidades como geração de texto, sumarização e resposta a perguntas.
-Diferentes modelos têm pontos fortes distintos, e combiná-los pode fornecer melhores resultados.
-"""
+# Caminhos das pastas
+PASTA_ENTRADA = "dados/textos_entrada/"
+PASTA_RESUMOS = "dados/resumos/"
+PASTA_AVALIACAO = "dados/avaliacoes/"
 
-resumo_referencia = "LLMs transformaram o PLN permitindo sumarização e geração de texto."
+# Criar pastas se ainda não existirem
+os.makedirs(PASTA_RESUMOS, exist_ok=True)
+os.makedirs(PASTA_AVALIACAO, exist_ok=True)
 
-if __name__ == "__main__":
-    for nome_modelo in ["llama", "deepseek"]:
-        print(f"\nResumo gerado por {nome_modelo}:")
-        resumo = gerar_resumo(texto_entrada, nome_modelo)
-        print(resumo)
+# Iterar sobre todos os arquivos de entrada
+for arquivo in os.listdir(PASTA_ENTRADA):
+    caminho_arquivo = os.path.join(PASTA_ENTRADA, arquivo)
 
-        print("\nAvaliação ROUGE:")
-        print(avaliar_resumo(resumo_referencia, resumo))
+    with open(caminho_arquivo, "r", encoding="utf-8") as f:
+        texto = f.read()
+
+    print(f"\n🔹 Gerando resumo para: {arquivo}")
+
+    # Definir um resumo de referência manual (pode ser modificado depois)
+    resumo_referencia = "Texto resumido esperado para esse documento."
+
+    # Criar dicionário para salvar as avaliações
+    resultados_avaliacao = {}
+
+    # Gerar resumos com os modelos disponíveis
+    for modelo in ["llama", "deepseek"]:
+        resumo = gerar_resumo(texto, modelo)
+
+        # Criar nome do arquivo de saída
+        caminho_resumo = os.path.join(PASTA_RESUMOS, f"{modelo}_{arquivo}")
+
+        # Salvar o resumo gerado
+        with open(caminho_resumo, "w", encoding="utf-8") as f:
+            f.write(resumo)
+
+        print(f"Resumo salvo em {caminho_resumo}")
+
+        # Avaliar o resumo gerado
+        print(f"📊 Avaliando resumo gerado por {modelo}...")
+        avaliacao = avaliar_resumo(resumo_referencia, resumo)
+        resultados_avaliacao[modelo] = avaliacao
+
+    # Salvar a avaliação no arquivo correspondente
+    caminho_avaliacao = os.path.join(PASTA_AVALIACAO, f"avaliacao_{arquivo.replace('.txt', '.json')}")
+    with open(caminho_avaliacao, "w", encoding="utf-8") as f:
+        f.write(str(resultados_avaliacao))  # Salvamos como string JSON
+
+    print(f"Avaliação salva em {caminho_avaliacao}")
