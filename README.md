@@ -11,15 +11,7 @@ Este projeto implementa um framework de sumarização de textos utilizando múlt
 
 ## Estrutura do Projeto
 ```
-multi-llm-summarization/
-│── data/                         # Textos de entrada e resumos de referência
-│── models/                       # Carregamento dos modelos LLM
-│── summarization/                # Implementação das estratégias de sumarização
-│── evaluation/                    # Cálculo de métricas ROUGE e BLEU
-│── scripts/                       # Scripts para rodar os experimentos
-│── config.py                      # Configurações globais
-│── requirements.txt                # Dependências
-│── README.md                      # Documentação
+
 ```
 
 ## Instalação
